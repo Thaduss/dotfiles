@@ -3,13 +3,16 @@ import subprocess
 import importlib.util
 from pathlib import Path
 
-#TODO:
-#check for symlink DONE
-#check for dir & create dir if false DONE
-#auto install programs and dependenies:
-# - nvim rp
-# - zsh 
-# - tmux plugmanager
+def link_lua():
+    lua_link_path = os.path.expanduser("~/.config/nvim/lua")
+    init_path = os.path.expanduser("~/.config/nvim/init.lua")
+    lua_path = os.path.expanduser("~/dotfiles/nvim/lua")
+    if os.path.islink(init_path):
+        if os.path.islink(lua_link_path):
+            print(f"\033[35mLink exists on: {lua_link_path}\033[0m")
+        else: 
+            os.symlink(lua_path, lua_link_path)
+            print("\033[38;5;208mSymbolic link created successfully: lua\033[0m")
 
 
 
@@ -63,17 +66,17 @@ def create_symbolic_links(dotfile_path):
                         
                         # Check the result
                         if result.returncode == 0:
-                            print(f"Symbolic link created successfully: {config['fileName']}")
+                            print(f"\033[38;5;208mSymbolic link created successfully: {config['fileName']}\033[0m")
                             return True
                         else:
-                            print("Failed to create symbolic link.")
+                            print("\033[31mFailed to create symbolic link.\033[0m")
                             return False
                     else:
                         if os.path.islink(link_path):
-                            print(f"link exists on: {file_name_path}")
+                            print(f"\033[35mlink exists on: {link_path}\033[0m")
                         else:
-                            print(f"Incorrect config on: {subdir}")
-    
+                            print(f"\033[31mIncorrect config on: {subdir}\033[0m")
+
     return False
 
 
@@ -87,6 +90,5 @@ def create_symbolic_links(dotfile_path):
 if __name__ == "__main__":
     dotfile_path = os.path.expanduser("~/dotfiles")
     create_symbolic_links(dotfile_path)
-
-    #f"ln -s ~/dotfiles/nvim/lua ~/.config/nvim"
+    link_lua()
 

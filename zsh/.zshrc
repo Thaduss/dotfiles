@@ -31,19 +31,32 @@ SAVEHIST=1000000
 setopt INC_APPEND_HISTORY
 setopt EXTENDED_HISTORY
 setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_DUPS
 
 # Set list-colors to enable filename colorizing
 zstyle ':completion*' list-colors ${(s.:.)LS_COLORS}
 
-# Aliases
-alias ls="ls --color=auto"
-alias lsa="ls -a --color=auto"
+#===========Aliases============
+
+# LS ALIASES
+#alias ls="ls --color=auto"
+#alias lsa="ls -a --color=auto"
+
+# TREE ALIASES
 alias tree="tree -C"
 alias tr="tree -C"
 alias tra="tree -a -C"
+
+# BAT ALIASES
 alias bat="batcat"
+
+# EXA ALIASES
+alias ls="exa"
+alias lsa="exa -a"
+alias ils="exa --icons"
+alias ilsa="exa --icons -a"
 
 # Keybinds
 bindkey '\e[Z' autosuggest-accept #{"command": {"action:sendInput", "input": \u001b[Z}, "keys": "shift+tab"}
