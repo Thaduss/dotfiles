@@ -153,7 +153,7 @@ if command -v starship >/dev/null 2>&1; then
     printGreen "starship is already installed"
 else
     printBlue "starship is not installed, installing..."
-    curl -sS https://starship.rs/install.sh | sh
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes
 fi
 
 if command -v batcat >/dev/null 2>&1; then
@@ -189,6 +189,9 @@ if [ "$SHELL" = "$(which zsh)" ]; then
 else 
     chsh -s $(which zsh)
     printBlueBold "set default Shell to 'zsh'"
+    if ! tmux ls &> /dev/null; then 
+    tmux
+    fi
     exec $(which zsh)
 fi
 
