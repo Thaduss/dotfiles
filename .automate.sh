@@ -78,7 +78,7 @@ installNvim() {
         printBlue "neovim is not installed, installing..."
         curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
         chmod u+x ~/dotfiles/nvim.appimage
-        mv -i ~/dotfiles/nvim.appimage /usr/bin/nvim
+        sudo mv -i ~/dotfiles/nvim.appimage /usr/bin/nvim
     else 
         printGreen "neovim v$NVIM_VERSION is already installed"
     fi
@@ -174,13 +174,11 @@ fi
 
 # Setup Dotfiles
 printGreen "\n==========LINKING_FILES=========="
-python3 .dotfilessetup.py
+python3 .dotfileslinks.py
 
 # Sourcing tmux for plugin installation
 printGreen "\n=====INSTALLING_TMUX_PLUGINS====="
-tmux run-shell '~/.tmux/plugins/tpm/scripts/install_plugins.sh'
-
-#printGreen "All programs are checked and installed if necessary"
+~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
 #=====================================
 
