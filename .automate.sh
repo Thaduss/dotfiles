@@ -8,6 +8,9 @@ programs="
     curl,
     tmux,
     exa,
+    btop,
+    npm,
+    neofetch,
     zsh
 "
 
@@ -44,19 +47,40 @@ EOF
 # Update apt Package List
 if checkInstalled "apt"; then
     sudo apt update
+elif checkInstalled "dnf"; then
+    sudo dnf check-update
+elif checkInstalled "pacman"; then
+    sudo pacman -Sy
+elif checkInstalled "zypper"; then
+    sudo zypper refresh
 fi
 
 printGreen "\n=====INSTALLING_APPLICATIONS====="
 
 # function for installing neovim
 installNvim() {
+    # Check for old nvim version 
+    if checkInstalled "nvim"; then
+        targetVersion="0.10.0"
+        # Get the Neovim version with awk
+        NVIM_VERSION=$(nvim --version | head -n 1 | awk '{print $2}')
+        # Remove 'v' from 'v x.x.x'
+        if [[ "$NVIM_VERSION" == v* ]]; then
+        NVIM_VERSION=${NVIM_VERSION:1}
+        fi
+        if [[ $(echo -e "$NVIM_VERSION\n$targetVersion" | sort -V | tail -n1) == "$targetVersion" ]]; then
+        echo "Neovim version is $NVIM_VERSION. Removing Neovim..."
+        packageManagerRemove "neovim"
+        fi
+    fi
+
     if ! checkInstalled "nvim"; then
         printBlue "neovim is not installed, installing..."
         curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-        chmod u+x ~/nvim.appimage
-        mv -i ~/nvim.appimage /usr/bin/nvim
+        chmod u+x ~/dotfiles/nvim.appimage
+        mv -i ~/dotfiles/nvim.appimage /usr/bin/nvim
     else 
-        printGreen "neovim is already installed"
+        printGreen "neovim v$NVIM_VERSION is already installed"
     fi
 }
 
@@ -70,6 +94,27 @@ packageManager() {
         sudo pacman -Sy --noconfirm "$1"
     elif checkInstalled "zypper"; then
         sudo zypper install -y "$1"
+    else 
+        printRed "Unsupported package manager"
+    fi
+    # Check if installed succesfully
+    if checkInstalled "$1"; then
+        printGreen "$1 has been installed succesfully"
+    else
+        printRed "err: $1 could not be installed"
+    fi
+
+}
+
+packageManagerRemove() {
+    if checkInstalled "apt"; then
+        sudo apt remove -y "$1"
+    elif checkInstalled "dnf"; then
+        sudo dnf remove -y "$1"
+    elif checkInstalled "pacman"; then
+        sudo pacman -R --noconfirm "$1"
+    elif checkInstalled "zypper"; then
+        sudo zypper remove -y "$1"
     else 
         printRed "Unsupported package manager"
     fi
@@ -127,20 +172,25 @@ fi
 
 #=====================================
 
-
-
 # Setup Dotfiles
 printGreen "\n==========LINKING_FILES=========="
 python3 .dotfilessetup.py
 
+# Sourcing tmux for plugin installation
+printGreen "\n=====INSTALLING_TMUX_PLUGINS====="
+tmux run-shell '~/.tmux/plugins/tpm/scripts/install_plugins.sh'
+
 #printGreen "All programs are checked and installed if necessary"
+
+#=====================================
 
 printGrayBold "\n===========CHECK_SHELL==========="
 # Check shell for zsh
 if [ "$SHELL" = "$(which zsh)" ]; then
-    printGrayBold "current Shell is zsh"
+    printGrayBold "current Shell is 'zsh'"
 else 
-    chsh -S $(which zsh)
-    printBlueBold "set Shell to zsh"
+    chsh -s $(which zsh)
+    printBlueBold "set default Shell to 'zsh'"
+    exec $(which zsh)
 fi
 
