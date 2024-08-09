@@ -30,9 +30,11 @@ require("lazy").setup({
         { 'windwp/nvim-autopairs', event = "InsertEnter", config = true},
         { 'nvim-lua/plenary.nvim' },
         { 'Shatur/neovim-session-manager' },
+        { 'lervag/vimtex' },
+        { 'Mofiqul/vscode.nvim' },
     },
     defaults = { lazy = false, version = false },
-    install = { colorscheme = { "tokyonight", habamax } },
+    install = { colorscheme = { "vscode" } },
     checker = {
         enabled = true,
         notify = false,
@@ -48,3 +50,4 @@ require( 'plugins.lualine' )
 require( 'plugins.telescope' )
 require( 'plugins.alpha-nvim' )
 require( 'plugins.session-manager' )
+require( 'plugins.vimtex' )

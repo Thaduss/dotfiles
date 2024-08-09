@@ -11,6 +11,10 @@ programs="
     btop,
     npm,
     neofetch,
+    zathura,
+    xdotool,   
+    biber,
+    latexmk,   
     zsh
 "
 
@@ -81,6 +85,18 @@ installNvim() {
         sudo mv -i ~/dotfiles/nvim.appimage /usr/bin/nvim
     else 
         printGreen "neovim v$NVIM_VERSION is already installed"
+    fi
+}
+
+# Installing gcm only needed for wsl
+InstallGcm() {
+    if command -v git-credential-manager >/dev/null 2>&1; then
+        printGreen "gcm is already installed"
+    else
+        printBlue "gcm is not installed, installing..."
+        curl -L -o gcm-linux_amd64.deb https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.5.1/gcm-linux_amd64.2.5.1.deb
+        sudo dpkg -i ~/dotfiles/gcm-linux_amd64.deb
+        git-credential-manager configure
     fi
 }
 
@@ -156,6 +172,7 @@ else
     curl -sS https://starship.rs/install.sh | sh -s -- --yes
 fi
 
+# Install bat which is under the name 'batcat'
 if command -v batcat >/dev/null 2>&1; then
     printGreen "bat is already installed"
 else
@@ -163,6 +180,7 @@ else
     packageManager "bat"
 fi
 
+# Install ripgrep
 if command -v rg >/dev/null 2>&1; then
     printGreen "ripgrep is already installed"
 else
@@ -170,6 +188,9 @@ else
     packageManager "ripgrep"
 fi
 
+# Install git credential manager (uncomment when using wsl)
+# InstallGcm
+    
 #=====================================
 
 # Setup Dotfiles

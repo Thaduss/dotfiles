@@ -63,3 +63,5 @@ bindkey '\e[Z' autosuggest-accept #{"command": {"action:sendInput", "input": \u0
 
 # Enable starship (Last load)
 eval "$(starship init zsh)"
+export OPENAI_KEY=
+export PATH=$PATH:/usr/local/bin
